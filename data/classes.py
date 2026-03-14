@@ -1,8 +1,5 @@
-
 classes = {
-"assassin":{"damage":40,"speed":30},
-"tank":{"hp":80,"defense":40},
-"mage":{"mana":100},
-"fighter":{"damage":30,"hp":30},
-"shadow_monarch":{"shadow_bonus":50}
+    "Warrior": {"HP": 120, "Attack": 12, "Defense": 6},
+    "Mage": {"HP": 80, "Attack": 18, "Defense": 3},
+    "Archer": {"HP": 100, "Attack": 15, "Defense": 4}
 }
