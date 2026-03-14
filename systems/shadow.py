@@ -1,8 +1,6 @@
-
 import random
 
-def arise(rank):
-    chance = 5
-    if rank == "S":
-        chance = 30
-    return random.randint(1,100) <= chance
+def shadow_event(player):
+    events = ["You found hidden treasure!", "A trap hurts you!", "A mysterious ally heals you."]
+    event = random.choice(events)
+    return event
