@@ -10,7 +10,7 @@ from commands.guild import createguild, joinguild
 from commands.aura import aura
 from commands.shop import shop
 
-TOKEN = "8128908243:AAFcnEnmz3ndp0eXRgzhbTTf3KMKSGH7SUc"
+TOKEN = "8128908243:AAGr3rwBzQYiyNtlWVDz73FGIAjiSVcq_e4"
 
 logging.basicConfig(level=logging.INFO)
 
