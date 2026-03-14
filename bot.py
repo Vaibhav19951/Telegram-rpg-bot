@@ -1,34 +1,31 @@
-
-import logging
 from telegram.ext import ApplicationBuilder, CommandHandler
+
+# Yahan apna Telegram Bot Token dal
+TOKEN = "8128908243:AAEFTdYSF7n7KxjWbpCRUb3y3bt7oLM-_wI"
+
+# Baaki imports aur commands
 from commands.profile import profile
 from commands.inventory import inventory
 from commands.map import show_map
 from commands.dungeon import enter_dungeon
 from commands.challenge import challenge
-from commands.guild import createguild, joinguild
-from commands.aura import aura
+from commands.guild import createguild
 from commands.shop import shop
+from commands.aura import aura
 
-TOKEN = "8688489635:AAFuFdkki9PWILTthLkqD99EnwdANGDOzUM"
+app = ApplicationBuilder().token(TOKEN).build()
 
-logging.basicConfig(level=logging.INFO)
+# Add command handlers
+app.add_handler(CommandHandler("profile", profile))
+app.add_handler(CommandHandler("inventory", inventory))
+app.add_handler(CommandHandler("map", show_map))
+app.add_handler(CommandHandler("dungeon", enter_dungeon))
+app.add_handler(CommandHandler("challenge", challenge))
+app.add_handler(CommandHandler("createguild", createguild))
+app.add_handler(CommandHandler("shop", shop))
+app.add_handler(CommandHandler("aura", aura))
+app.add_handler(CommandHandler("setaura", aura))
 
-def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+print("🔥 RPG BOT RUNNING...")
 
-    app.add_handler(CommandHandler("profile", profile))
-    app.add_handler(CommandHandler("inventory", inventory))
-    app.add_handler(CommandHandler("map", show_map))
-    app.add_handler(CommandHandler("dungeon", enter_dungeon))
-    app.add_handler(CommandHandler("challenge", challenge))
-    app.add_handler(CommandHandler("createguild", createguild))
-    app.add_handler(CommandHandler("joinguild", joinguild))
-    app.add_handler(CommandHandler("aura", aura))
-    app.add_handler(CommandHandler("shop", shop))
-
-    print("Bot running...")
-    app.run_polling()
-
-if __name__ == "__main__":
-    main()
+app.run_polling()
