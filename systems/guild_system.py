@@ -1,14 +1,17 @@
-guilds = {}
+from database.db import load_players, save_players
+players = load_players()
 
-def create_guild(name, owner):
-    if name in guilds:
-        return False
-    guilds[name] = {"owner": owner, "members":[owner]}
-    return True
+def add_item(player_id, item):
+    player = players.get(str(player_id), {"inventory":[], "gold":100})
+    player['inventory'].append(item)
+    players[str(player_id)] = player
+    save_players(players)
 
-def join_guild(name, member):
-    if name not in guilds:
-        return False
-    if member not in guilds[name]['members']:
-        guilds[name]['members'].append(member)
-    return True
+def remove_item(player_id, item):
+    player = players.get(str(player_id), {"inventory":[]})
+    if item in player['inventory']:
+        player['inventory'].remove(item)
+        players[str(player_id)] = player
+        save_players(players)
+        return True
+    return False
