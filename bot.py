@@ -10,7 +10,7 @@ from commands.guild import createguild, joinguild
 from commands.aura import aura
 from commands.shop import shop
 
-TOKEN = "PASTE_YOUR_BOT_TOKEN_HERE"
+TOKEN = "8128908243:AAFcnEnmz3ndp0eXRgzhbTTf3KMKSGH7SUc"
 
 logging.basicConfig(level=logging.INFO)
 
