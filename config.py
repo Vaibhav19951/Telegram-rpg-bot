@@ -1,0 +1,4 @@
+
+BOT_NAME = "ShadowRPG"
+START_COINS = 500
+MAX_SHADOWS = 3
