@@ -1,24 +1,16 @@
+import json
+import os
 
-import sqlite3
+DATA_FILE = 'data/players.json'
 
-conn = sqlite3.connect("game.db")
-cursor = conn.cursor()
+def load_players():
+    if not os.path.exists('data'):
+        os.makedirs('data')
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as f:
+            return json.load(f)
+    return {}
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS players(
-id INTEGER PRIMARY KEY,
-level INTEGER,
-coins INTEGER,
-class TEXT,
-aura TEXT
-)
-''')
-
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS guilds(
-name TEXT,
-leader INTEGER
-)
-''')
-
-conn.commit()
+def save_players(players):
+    with open(DATA_FILE, 'w') as f:
+        json.dump(players, f, indent=4)
