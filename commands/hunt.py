@@ -79,19 +79,18 @@ async def hunt(update, context):
 
     monster = get_monster_by_level(player["level"])
 
+    # Fetch and send the image if it exists
     image_url = MONSTER_IMAGES.get(monster["name"])
     if image_url and image_url.startswith("http"):
         try:
-            image_url = MONSTER_IMAGES.get(monster["name"])
-
-if image_url:
-    try:
-        response = requests.get(image_url)
-        if response.status_code == 200:
-            image_bytes = BytesIO(response.content)
-            await update.message.reply_photo(photo=image_bytes)
-    except:
-        pass
+            response = requests.get(image_url)
+            if response.status_code == 200:
+                image_bytes = BytesIO(response.content)
+                # Note: reply_photo requires a valid chat/message context to work properly
+                await update.message.reply_photo(photo=image_bytes)
+        except:
+            # If the image fails to download, we just silently pass and continue the hunt
+            pass
 
     # Basic damage
     damage = player["strength"] * 5
