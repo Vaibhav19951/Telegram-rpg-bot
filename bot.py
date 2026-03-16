@@ -1,16 +1,18 @@
-user:
-  name: "Aritra"
-  github: "safari"
+import logging
+from telegram.ext import ApplicationBuilder, CommandHandler
+from config import TOKEN
 
-runtime:
-  image: "python:3.11-slim"
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
+)
 
-commands:
-  package: ""
-  build:
-    - "pip install -r requirements.txt"
-  start: "python bot.py"
+async def start(update, context):
+    await update.message.reply_text("🤖 RPG Bot is running!")
 
-repository:
-  branch: "main"
-  auto_deploy: true
+app = ApplicationBuilder().token(TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
+
+print("Bot running...")
+app.run_polling()
