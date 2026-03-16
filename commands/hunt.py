@@ -1,3 +1,5 @@
+import requests
+from io import BytesIO
 import random
 
 MONSTERS = [
@@ -80,9 +82,16 @@ async def hunt(update, context):
     image_url = MONSTER_IMAGES.get(monster["name"])
     if image_url and image_url.startswith("http"):
         try:
-            await update.message.reply_photo(photo=image_url)
-        except Exception:
-            pass
+            image_url = MONSTER_IMAGES.get(monster["name"])
+
+if image_url:
+    try:
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            image_bytes = BytesIO(response.content)
+            await update.message.reply_photo(photo=image_bytes)
+    except:
+        pass
 
     # Basic damage
     damage = player["strength"] * 5
