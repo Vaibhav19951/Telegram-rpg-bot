@@ -1,7 +1,7 @@
 import os
 import sys
 
-ADMIN_ID = 2086993762,5131050747
+ADMIN_ID = 2086993762, 5131050747
 
 async def restart(update, context):
     user = update.effective_user
