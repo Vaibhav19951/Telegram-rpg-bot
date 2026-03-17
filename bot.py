@@ -24,7 +24,7 @@ from commands.setaura import setaura
 from commands.restart import restart
 
 
-# 🔥 LOGGING
+# 🔥 LOGGING (IMPORTANT FOR DEBUG)
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO
@@ -34,33 +34,42 @@ logging.basicConfig(
 def main():
     print("🚀 BOT STARTING...")
 
-    # 🔥 DATABASE INIT
-    create_tables()
+    try:
+        # 🔥 DATABASE INIT
+        create_tables()
+        print("✅ DATABASE READY")
+    except Exception as e:
+        print("❌ DB ERROR:", e)
 
-    app = ApplicationBuilder().token(TOKEN).build()
+    try:
+        app = ApplicationBuilder().token(TOKEN).build()
 
-    # 🔥 ALL HANDLERS
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("profile", profile))
-    app.add_handler(CommandHandler("team", team))
-    app.add_handler(CommandHandler("hunt", hunt))
-    app.add_handler(CommandHandler("summon", summon))
-    app.add_handler(CommandHandler("arise", arise))
-    app.add_handler(CommandHandler("gates", gates))
-    app.add_handler(CommandHandler("challenge", challenge))
-    app.add_handler(CommandHandler("pvp", pvp))
-    app.add_handler(CommandHandler("inventory", inventory))
-    app.add_handler(CommandHandler("map", show_map))
-    app.add_handler(CommandHandler("createguild", createguild))
-    app.add_handler(CommandHandler("shop", shop))
-    app.add_handler(CommandHandler("dungeon", enter_dungeon))
-    app.add_handler(CommandHandler("aura", aura))
-    app.add_handler(CommandHandler("setaura", setaura))
-    app.add_handler(CommandHandler("restart", restart))
+        # 🔥 HANDLERS
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("profile", profile))
+        app.add_handler(CommandHandler("team", team))
+        app.add_handler(CommandHandler("hunt", hunt))
+        app.add_handler(CommandHandler("summon", summon))
+        app.add_handler(CommandHandler("arise", arise))
+        app.add_handler(CommandHandler("gates", gates))
+        app.add_handler(CommandHandler("challenge", challenge))
+        app.add_handler(CommandHandler("pvp", pvp))
+        app.add_handler(CommandHandler("inventory", inventory))
+        app.add_handler(CommandHandler("map", show_map))
+        app.add_handler(CommandHandler("createguild", createguild))
+        app.add_handler(CommandHandler("shop", shop))
+        app.add_handler(CommandHandler("dungeon", enter_dungeon))
+        app.add_handler(CommandHandler("aura", aura))
+        app.add_handler(CommandHandler("setaura", setaura))
+        app.add_handler(CommandHandler("restart", restart))
 
-    print("✅ BOT RUNNING...")
+        print("✅ BOT RUNNING...")
 
-    app.run_polling()
+        # 🔥 IMPORTANT (fixes stuck bot issues)
+        app.run_polling(drop_pending_updates=True)
+
+    except Exception as e:
+        print("❌ BOT CRASH:", e)
 
 
 if __name__ == "__main__":
