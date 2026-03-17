@@ -32,9 +32,9 @@ logging.basicConfig(
 
 
 def main():
-    print("🚀 Bot starting...")
+    print("🚀 BOT STARTING...")
 
-    # 🔥 DATABASE TABLE CREATE
+    # 🔥 DATABASE INIT
     create_tables()
 
     app = ApplicationBuilder().token(TOKEN).build()
@@ -58,7 +58,7 @@ def main():
     app.add_handler(CommandHandler("setaura", setaura))
     app.add_handler(CommandHandler("restart", restart))
 
-    print("BOT STARTED 🔥")
+    print("✅ BOT RUNNING...")
 
     app.run_polling()
 
