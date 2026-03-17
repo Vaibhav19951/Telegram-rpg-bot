@@ -2,7 +2,7 @@ import os
 import sys
 
 # 🔥 MULTIPLE ADMINS
-ADMIN_IDS = [2086993762, 5131050747]  # 👈 apne ids daal
+ADMIN_IDS = [2086993762, 7708811819]  # 👈 apne ids daal
 
 async def restart(update, context):
     user = update.effective_user
