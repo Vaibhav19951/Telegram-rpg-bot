@@ -1,4 +1,5 @@
 import random
+from database.db import get_user, save_user
 
 MONSTERS = [
     {"name": "Goblin", "rank": "E", "hp": 50, "xp": 20, "gold": 15},
@@ -45,12 +46,22 @@ def get_monster_by_level(player_level: int):
 
 async def hunt(update, context):
     user = update.effective_user
-    players = context.bot_data.get("players", {})
-    player = players.get(user.id)
 
+    # 🔥 LOAD FROM DATABASE
+    player = get_user(user.id)
+
+    # 🆕 NEW PLAYER
     if not player:
-        await update.message.reply_text("First use /start")
-        return
+        player = {
+            "level": 1,
+            "xp": 0,
+            "gold": 100,
+            "hp": 100,
+            "strength": 5,
+            "sense": 0,
+            "aura": "",
+            "stat_points": 0
+        }
 
     monster = get_monster_by_level(player["level"])
 
@@ -75,11 +86,9 @@ async def hunt(update, context):
 
     monster_hp_left = monster["hp"] - damage
 
-    gained_xp = monster["xp"]
-    gained_gold = monster["gold"]
-
-    player["xp"] += gained_xp
-    player["gold"] += gained_gold
+    # 🎁 REWARDS
+    player["xp"] += monster["xp"]
+    player["gold"] += monster["gold"]
 
     # 🔼 LEVEL UP
     level_up_text = ""
@@ -90,17 +99,13 @@ async def hunt(update, context):
         player["level"] += 1
         player["stat_points"] += 5
         player["hp"] += 20
-        player["mana"] += 10
         required = get_required_xp(player["level"])
 
-        level_up_text += (
-            f"\n\n🎉 LEVEL UP!"
-            f"\nYou are now level {player['level']}"
-        )
+        level_up_text += f"\n\n🎉 LEVEL UP! Now level {player['level']}"
 
     crit_text = "\n💥 CRITICAL HIT!" if crit else ""
 
-    # 🧾 FINAL TEXT
+    # 🧾 MESSAGE
     caption_text = (
         f"⚔ HUNT STARTED\n\n"
         f"👹 Enemy: {monster['name']}\n"
@@ -109,12 +114,12 @@ async def hunt(update, context):
         f"⚡ Damage: {damage}{crit_text}\n"
         f"💔 Enemy HP left: {max(0, monster_hp_left)}\n\n"
         f"🎁 Rewards:\n"
-        f"+{gained_xp} XP\n"
-        f"+{gained_gold} Gold"
+        f"+{monster['xp']} XP\n"
+        f"+{monster['gold']} Gold"
         f"{level_up_text}"
     )
 
-    # 🖼 AUTO IMAGE SYSTEM
+    # 🖼 AUTO IMAGE
     image_path = f"images/{monster['name'].lower().replace(' ', '_')}.jpg"
 
     try:
@@ -122,9 +127,8 @@ async def hunt(update, context):
             photo=open(image_path, "rb"),
             caption=caption_text
         )
-        return
     except:
-        pass
+        await update.message.reply_text(caption_text)
 
-    # fallback
-    await update.message.reply_text(caption_text)
+    # 💾 SAVE TO DATABASE
+    save_user(user.id, user.username, player)
