@@ -19,7 +19,7 @@ from commands.shop import shop
 from commands.dungeon import enter_dungeon
 from commands.aura import aura
 from commands.setaura import setaura
-
+from commands.restart import restart
 
 # Logging setup
 logging.basicConfig(
@@ -49,6 +49,7 @@ app.add_handler(CommandHandler("shop", shop))
 app.add_handler(CommandHandler("dungeon", enter_dungeon))
 app.add_handler(CommandHandler("aura", aura))
 app.add_handler(CommandHandler("setaura", setaura))
+app.add_handler(CommandHandler("restart", restart))
 
 print("✅ RPG Bot is running...")
 
