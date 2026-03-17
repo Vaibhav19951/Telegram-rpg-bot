@@ -58,7 +58,7 @@ def main():
     app.add_handler(CommandHandler("setaura", setaura))
     app.add_handler(CommandHandler("restart", restart))
 
-    print("✅ Bot is running...")
+    print("BOT STARTED 🔥")
 
     app.run_polling()
 
