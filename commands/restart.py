@@ -1,15 +1,21 @@
 import os
 import sys
 
-ADMIN_ID = 2086993762, 5131050747
+# 🔥 MULTIPLE ADMINS
+ADMIN_IDS = [2086993762, 5131050747]  # 👈 apne ids daal
 
 async def restart(update, context):
     user = update.effective_user
 
-    if user.id != ADMIN_ID:
+    # ❌ Non-admin block
+    if user.id not in ADMIN_IDS:
         await update.message.reply_text("❌ You are not allowed")
         return
 
-    await update.message.reply_text("♻️ Restarting bot...")
+    await update.message.reply_text("♻️ Restarting bot safely...")
 
-    os.execv(sys.executable, ['python'] + sys.argv)
+    # 🧹 Clean shutdown (important)
+    await context.application.shutdown()
+
+    # 💀 SAFE RESTART
+    os.execv(sys.executable, [sys.executable] + sys.argv)
