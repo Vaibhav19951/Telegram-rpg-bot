@@ -1,3 +1,4 @@
+from database.db import users
 async def setaura(update, context):
     user = update.effective_user
 
