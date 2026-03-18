@@ -2,7 +2,7 @@ import logging
 from telegram.ext import ApplicationBuilder, CommandHandler
 
 from config import TOKEN
-from database.db import create_tables
+from database.db import users 
 
 # 🔥 ALL COMMAND IMPORTS
 from commands.start import start
