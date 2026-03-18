@@ -2,35 +2,29 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from database.db import users
 
-# Player data store (future me DB)
-players = {}
-
-def get_player(user_id, user_name):
-    if user_id not in players:
-        players[user_id] = {
-            "name": user_name,
-            "gold": 100,
-            "inventory": ["Wooden Sword", "Health Potion"],
-            "HP": 100,
-            "Attack": 10,
-            "Defense": 5
-        }
-    return players[user_id]
 
 async def inventory(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    player = get_player(user.id, user.first_name)
+    user_id = update.effective_user.id
+    player = users.get(user_id)
 
-    inventory_text = f"🎒 {player['name']}'s Inventory:\n\n"
-    if player["inventory"]:
-        for idx, item in enumerate(player["inventory"], 1):
-            inventory_text += f"{idx}. {item}\n"
+    if not player:
+        await update.message.reply_text("❌ Use /start first")
+        return
+
+    inv = player.get("inventory", [])
+
+    if not inv:
+        items_text = "Empty"
     else:
-        inventory_text += "Empty 😢\n"
+        items_text = "\n".join([f"{i+1}. {item}" for i, item in enumerate(inv)])
 
-    inventory_text += f"\n💰 Gold: {player['gold']}\n"
-    inventory_text += f"❤️ HP: {player['HP']}\n"
-    inventory_text += f"⚔️ Attack: {player['Attack']}\n"
-    inventory_text += f"🛡 Defense: {player['Defense']}\n"
+    msg = (
+        f"🎒 <b>{player['name']}'s Inventory</b>\n\n"
+        f"{items_text}\n\n"
+        f"💰 Gold: {player['gold']}\n"
+        f"❤️ HP: {player['hp']}\n"
+        f"⚔️ Attack: {player['strength']}\n"
+        f"🛡️ Defense: {player['vitality']}"
+    )
 
-    await update.message.reply_text(inventory_text)
+    await update.message.reply_text(msg, parse_mode="HTML")
