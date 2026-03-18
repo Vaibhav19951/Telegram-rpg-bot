@@ -11,16 +11,23 @@ def give_rewards(player, monster):
     player["xp"] = player.get("xp", 0) + xp
     rewards["xp"] = xp
 
-    # 🎒 INVENTORY FIX (IMPORTANT)
-    if "inventory" not in player or not isinstance(player["inventory"], list):
-        player["inventory"] = []
+    # 🎒 INVENTORY FIX (HARD FIX)
+    inventory = player.get("inventory")
 
-    # 🎁 ITEM DROP
+    # agar inventory missing ya galat hai
+    if not isinstance(inventory, list):
+        inventory = []
+
+    # item add
     item = f"{monster['name']} Loot"
-    player["inventory"].append(item)
+    inventory.append(item)
+
+    # IMPORTANT: wapas assign kar
+    player["inventory"] = inventory
+
     rewards["item"] = item
 
-    # 🔥 DEBUG PRINT
-    print("Inventory now:", player["inventory"])
+    print("🔥 ITEM ADDED:", item)
+    print("📦 FINAL INVENTORY:", player["inventory"])
 
     return rewards
