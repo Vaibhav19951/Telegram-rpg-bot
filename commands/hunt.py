@@ -34,10 +34,23 @@ def get_monster_by_level(player_level):
     return random.choice(pool)
 
 
-# 🔥 AUTO IMAGE SYSTEM (no need image field)
-def get_image_path(monster_name):
-    filename = monster_name.lower().replace(" ", "_") + ".png"
-    return f"images/{filename}"
+# 🔥 AUTO IMAGE MATCH (NO EDIT NEEDED)
+def find_image(monster_name):
+    if not os.path.exists("images"):
+        return None
+
+    files = os.listdir("images")
+
+    # normalize name
+    clean_name = monster_name.lower().replace(" ", "")
+
+    for file in files:
+        file_name = file.lower().replace("_", "").replace(" ", "").replace(".png", "").replace(".jpg", "")
+
+        if clean_name in file_name:
+            return os.path.join("images", file)
+
+    return os.path.join("images", "default.png")
 
 
 async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -91,25 +104,22 @@ async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📊 XP: {player['xp']}/{required_xp}\n"
         f"{bar}\n\n"
 
-        f"❤️ HP: {player.get('hp', 100)}\n"
-        f"🔮 Mana: {player.get('mana', 50)}\n\n"
-
         f"🎯 Stat Points: {player['stat_points']}"
         f"{level_up_msg}"
     )
 
-    image_path = get_image_path(name)
+    image_path = find_image(name)
 
     try:
-        if not os.path.exists(image_path):
-            image_path = "images/default.png"
-
-        with open(image_path, "rb") as photo:
-            await update.message.reply_photo(
-                photo=photo,
-                caption=caption,
-                parse_mode="HTML"
-            )
+        if image_path and os.path.exists(image_path):
+            with open(image_path, "rb") as photo:
+                await update.message.reply_photo(
+                    photo=photo,
+                    caption=caption,
+                    parse_mode="HTML"
+                )
+        else:
+            await update.message.reply_text(caption, parse_mode="HTML")
 
     except Exception as e:
         print("Image error:", e)
