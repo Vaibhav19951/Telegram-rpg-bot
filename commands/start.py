@@ -7,7 +7,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
 
     if user_id in users:
-        await update.message.reply_text("✅ Tu already start kar chuka hai")
+        await update.message.reply_text(
+            "⚡ <b>You have already started your journey!</b>\n\n"
+            "Use /profile to check your stats 👤",
+            parse_mode="HTML"
+        )
         return
 
     users[user_id] = {
@@ -34,4 +38,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "last_boss": None
     }
 
-    await update.message.reply_text("🔥 Game start ho gaya!\n\nAb /profile try kar")
+    await update.message.reply_text(
+        "🔥 <b>WELCOME, HUNTER!</b> 🔥\n\n"
+        "⚔️ Your journey has begun...\n"
+        "💀 Grow stronger, defeat monsters, and rise above all!\n\n"
+        "👉 Use /profile to view your stats",
+        parse_mode="HTML"
+    )
