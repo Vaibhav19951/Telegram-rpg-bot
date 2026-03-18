@@ -7,7 +7,6 @@ from data.monsters import MONSTERS
 from systems.combat import fight
 from systems.rewards import give_rewards
 
-
 def get_required_xp(level: int) -> int:
     return level * level * 100
 
