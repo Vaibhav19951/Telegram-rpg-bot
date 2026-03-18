@@ -1,4 +1,5 @@
 import random
+from database.db import users
 
 HUNTERS = [
     ("Yoo Jinho", "E"),
