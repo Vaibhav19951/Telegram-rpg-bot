@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 import random
+from database.db import users
 
 # Simple player data (future me DB me migrate karenge)
 players = {}
