@@ -1,28 +1,23 @@
-async def profile(update, context):
-    user = update.effective_user
+users[user_id] = {
+    "name": update.effective_user.first_name,
+    "rank": "E",
+    "level": 1,
+    "xp": 0,
+    "gold": 100,
 
-    players = context.bot_data.get("players", {})
-    player = players.get(user.id)
+    "hp": 100,
+    "mana": 50,
 
-    if not player:
-        await update.message.reply_text("First use /start")
-        return
+    "strength": 10,
+    "vitality": 10,
+    "agility": 10,
+    "intelligence": 10,
+    "sense": 10,
 
-    msg = (
-        "🧾 HUNTER STATUS\n\n"
-        f"Hunter: {player['name']}\n"
-        f"Rank: {player['rank']}\n"
-        f"Level: {player['level']}\n"
-        f"XP: {player['xp']}\n"
-        f"Gold: {player['gold']}\n\n"
-        f"HP: {player['hp']}\n"
-        f"Mana: {player['mana']}\n\n"
-        f"Strength: {player['strength']}\n"
-        f"Vitality: {player['vitality']}\n"
-        f"Agility: {player['agility']}\n"
-        f"Intelligence: {player['intelligence']}\n"
-        f"Sense: {player['sense']}\n\n"
-        f"Remaining Stat Points: {player['stat_points']}"
-    )
+    "stat_points": 0,
 
-    await update.message.reply_text(msg)
+    "inventory": [],
+    "shadows": [],
+    "aura": "None",
+    "last_boss": None
+}
