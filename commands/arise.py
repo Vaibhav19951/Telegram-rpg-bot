@@ -1,3 +1,8 @@
+from telegram import Update
+from telegram.ext import ContextTypes
+from database.db import users
+
+
 ARISEABLE_BOSSES = {
     "Blood-Red Commander Igris": "Igris",
     "Baruka": "Baruka",
@@ -11,36 +16,44 @@ PREMIUM_NOT_ARISE = {
     "Tarnak", "Legia", "Querehsha", "Yogumunt"
 }
 
-async def arise(update, context):
+
+async def arise(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    players = context.bot_data.get("players", {})
-    player = players.get(user.id)
+    user_id = user.id
+
+    # 🔥 USERS DATABASE CHECK
+    player = users.get(user_id)
 
     if not player:
-        await update.message.reply_text("First use /start")
+        await update.message.reply_text("❌ Pehle /start kar")
         return
 
+    # 🔥 LAST BOSS CHECK
     boss = player.get("last_boss")
 
     if not boss:
-        await update.message.reply_text("No recent boss available for arise.")
+        await update.message.reply_text("❌ No recent boss available for arise.")
         return
 
+    # 🔥 PREMIUM CHECK
     if boss in PREMIUM_NOT_ARISE:
-        await update.message.reply_text("❌ Premium monarchs cannot be obtained with arise.")
+        await update.message.reply_text("❌ Ye boss arise nahi ho sakta")
         return
 
-    shadow = ARISEABLE_BOSSES.get(boss)
-    if not shadow:
-        await update.message.reply_text("❌ This boss cannot be turned into a shadow.")
+    # 🔥 ARISEABLE CHECK
+    if boss not in ARISEABLE_BOSSES:
+        await update.message.reply_text("❌ Ye boss ariseable nahi hai")
         return
 
-    if shadow in player["shadows"]:
-        await update.message.reply_text(f"{shadow} is already in your shadow army.")
-        return
+    shadow_name = ARISEABLE_BOSSES[boss]
 
-    player["shadows"].append(shadow)
+    # 🔥 INVENTORY ME ADD KARNA
+    if "shadows" not in player:
+        player["shadows"] = []
+
+    player["shadows"].append(shadow_name)
+
     await update.message.reply_text(
-        f"🖤 ARISE!\n\n{boss} has been extracted as shadow.\n"
-        f"New Shadow: {shadow}"
+        f"🔥 {boss} ko arise kar liya!\n\n"
+        f"👤 Shadow: {shadow_name} added to your army 💀"
     )
