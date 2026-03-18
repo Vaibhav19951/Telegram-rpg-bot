@@ -1,3 +1,4 @@
+from database.db import users
 async def team(update, context):
     user = update.effective_user
     players = context.bot_data.get("players", {})
