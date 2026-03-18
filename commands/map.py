@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from database.db import users
 
 # Simple map locations
 locations = {
