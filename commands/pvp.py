@@ -1,4 +1,5 @@
 from systems.battle_system import calculate_damage
+from database.db import users
 
 async def pvp(update, context):
     user = update.effective_user
