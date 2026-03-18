@@ -1,27 +1,31 @@
 import random
-from database.db import load_players, save_players
 
-players = load_players()
 
-def fight(player_id, player_name, enemy):
-    player = players.get(str(player_id), {"HP":100, "Attack":10, "Defense":5, "Gold":50})
-    player_attack = player['Attack'] + random.randint(0,5)
-    enemy_attack = enemy['Attack'] + random.randint(0,5)
-    enemy['HP'] -= player_attack
-    player['HP'] -= enemy_attack
-    result = {
-        "player_hp": player['HP'],
-        "enemy_hp": enemy['HP'],
-        "damage_dealt": player_attack,
-        "damage_taken": enemy_attack
-    }
-    if enemy['HP'] <=0 and player['HP']>0:
-        gold = random.randint(10,30)
-        player['Gold'] += gold
-        result['win']=True
-        result['gold']=gold
-    elif player['HP']<=0:
-        result['lost']=True
-    players[str(player_id)] = player
-    save_players(players)
-    return result
+def calculate_damage(player):
+    base = player.get("strength", 10)
+    return random.randint(base, base + 10)
+
+
+def monster_damage():
+    return random.randint(5, 15)
+
+
+def fight(player, monster):
+    player_hp = player.get("hp", 100)
+    monster_hp = monster.get("hp", 50)
+
+    log = []
+
+    while player_hp > 0 and monster_hp > 0:
+        dmg = calculate_damage(player)
+        monster_hp -= dmg
+        log.append(f"⚔️ You hit {monster['name']} for {dmg}")
+
+        if monster_hp <= 0:
+            return True, log
+
+        dmg = monster_damage()
+        player_hp -= dmg
+        log.append(f"💀 {monster['name']} hit you for {dmg}")
+
+    return False, log
