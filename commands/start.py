@@ -1,21 +1,23 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from database.db import users
+from database.db import users, save_data
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
+    user = update.effective_user
+    user_id = user.id
 
+    # 🧠 already exists check
     if user_id in users:
         await update.message.reply_text(
-            "⚡ <b>You have already started your journey!</b>\n\n"
-            "Use /profile to check your stats 👤",
+            "⚡ <b>You are already a Hunter!</b>",
             parse_mode="HTML"
         )
         return
 
+    # 🔥 create new player
     users[user_id] = {
-        "name": update.effective_user.first_name,
+        "name": user.first_name,
         "rank": "E",
         "level": 1,
         "xp": 0,
@@ -32,16 +34,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         "stat_points": 0,
 
-        "inventory": [],
+        "inventory": [],   # 🎒 IMPORTANT
         "shadows": [],
         "aura": "None",
+
         "last_boss": None
     }
 
-    await update.message.reply_text(
+    # 💾 SAVE DATA
+    save_data()
+
+    # 💥 stylish welcome
+    msg = (
         "🔥 <b>WELCOME, HUNTER!</b> 🔥\n\n"
-        "⚔️ Your journey has begun...\n"
-        "💀 Grow stronger, defeat monsters, and rise above all!\n\n"
-        "👉 Use /profile to view your stats",
-        parse_mode="HTML"
+        "⚔️ Your journey has begun...\n\n"
+        "🧬 Rank: E\n"
+        "🎒 Inventory: Empty\n\n"
+        "💡 Use /hunt to start fighting monsters!"
     )
+
+    await update.message.reply_text(msg, parse_mode="HTML")
