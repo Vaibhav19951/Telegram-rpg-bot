@@ -1,58 +1,37 @@
-async def start(update, context):
-    user = update.effective_user
+from telegram import Update
+from telegram.ext import ContextTypes
+from database.db import users
 
-    # ❌ group block
-    if update.effective_chat.type != "private":
-        await update.message.reply_text(
-            "⚠️ Use this bot in private chat only.\n👉 DM me to start!"
-        )
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+
+    if user_id in users:
+        await update.message.reply_text("✅ Tu already start kar chuka hai")
         return
 
-    from database.db import get_user, save_user
+    users[user_id] = {
+        "name": update.effective_user.first_name,
+        "rank": "E",
+        "level": 1,
+        "xp": 0,
+        "gold": 100,
 
-    player = get_user(user.id)
+        "hp": 100,
+        "mana": 50,
 
-    # 🆕 NEW PLAYER
-    if not player:
-users[user_id] = {
-    "name": update.effective_user.first_name,
-    "rank": "E",
-    "level": 1,
-    "xp": 0,
-    "gold": 100,
+        "strength": 10,
+        "vitality": 10,
+        "agility": 10,
+        "intelligence": 10,
+        "sense": 10,
 
-    "hp": 100,
-    "mana": 50,
+        "stat_points": 0,
 
-    "strength": 10,
-    "vitality": 10,
-    "agility": 10,
-    "intelligence": 10,
-    "sense": 10,
+        "inventory": [],
+        "shadows": [],
+        "aura": "None",
+        "last_boss": None
+    }
 
-    "stat_points": 0,
-
-    "inventory": [],
-    "shadows": [],
-    "aura": "None",
-    "last_boss": None
-}
-
-        save_user(user.id, user.username, player)
-
-        await update.message.reply_text(
-            "✨ Welcome, Hunter!\n\n"
-            "⚔️ Your journey begins now.\n"
-            "💰 Gold: 100 | ❤️ HP: 100\n\n"
-            "👉 Use /hunt"
-        )
-
-    # 🔁 OLD PLAYER
-    else:
-        await update.message.reply_text(
-            f"👋 Welcome back!\n\n"
-            f"🏆 Level: {player['level']}\n"
-            f"💰 Gold: {player['gold']}\n"
-            f"⚡ XP: {player['xp']}\n\n"
-            f"👉 Use /hunt"
-        )
+    await update.message.reply_text("🔥 Game start ho gaya!\n\nAb /profile try kar")
