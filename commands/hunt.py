@@ -1,6 +1,8 @@
 import random
-from data.monsters import MONSTERS
+from telegram import Update
+from telegram.ext import ContextTypes
 from database.db import users
+from data.monsters import MONSTERS
 
 
 def get_required_xp(level: int) -> int:
@@ -24,66 +26,62 @@ def get_monster_by_level(player_level):
     return random.choice(pool)
 
 
-async def hunt(update, context):
-    user = update.effective_user
-
-    player = get_user(user.id)
+async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    player = users.get(user_id)
 
     if not player:
-        await update.message.reply_text("⚠️ First use /start")
+        await update.message.reply_text(
+            "❌ <b>You need to start first!</b>\nUse /start",
+            parse_mode="HTML"
+        )
         return
 
-    # 👾 MONSTER PICK
+    # 🎯 Monster select
     monster = get_monster_by_level(player["level"])
 
-    # ⚔ DAMAGE
-    damage = player["strength"] * 5
-    monster_hp_left = monster["hp"] - damage
+    name = monster["name"]
+    rank = monster["rank"]
+    image = monster["image"]  # ⚠️ ye MONSTERS me hona chahiye
 
-    # 🎁 REWARDS
-    player["xp"] += monster["xp"]
-    player["gold"] += monster["gold"]
+    # 💰 Rewards
+    gold = random.randint(30, 100)
+    xp = random.randint(20, 50)
 
-    # ⬆️ LEVEL UP
-    level_up_text = ""
-    required = get_required_xp(player["level"])
+    player["gold"] += gold
+    player["xp"] += xp
+    player["last_boss"] = name
 
-    while player["xp"] >= required:
-        player["xp"] -= required
+    # 🔥 LEVEL UP SYSTEM
+    required_xp = get_required_xp(player["level"])
+
+    level_up_msg = ""
+    if player["xp"] >= required_xp:
+        player["xp"] -= required_xp
         player["level"] += 1
         player["stat_points"] += 5
-        player["hp"] += 20
-        required = get_required_xp(player["level"])
 
-        level_up_text += (
-            f"\n\n🎉 LEVEL UP!"
-            f"\nLevel: {player['level']}"
-            f"\n+5 stat points"
+        level_up_msg = (
+            "\n\n🔥 <b>LEVEL UP!</b> 🔥\n"
+            f"🧬 New Level: {player['level']}\n"
+            f"🎯 +5 Stat Points"
         )
 
-    # 📝 TEXT
-    text = (
-        f"⚔ HUNT STARTED\n\n"
-        f"👾 {monster['name']} ({monster['rank']})\n"
-        f"❤️ HP: {monster['hp']}\n\n"
-        f"💥 Damage: {damage}\n"
-        f"❤️ Enemy Left: {max(0, monster_hp_left)}\n\n"
-        f"🎁 Rewards:\n"
-        f"+{monster['xp']} XP\n"
-        f"+{monster['gold']} Gold"
-        f"{level_up_text}"
+    # 💥 STYLISH MESSAGE
+    caption = (
+        "⚔️ <b>HUNT RESULT</b> ⚔️\n\n"
+        f"👹 <b>Monster:</b> {name}\n"
+        f"🏅 <b>Rank:</b> {rank}\n\n"
+        f"💰 <b>Gold Earned:</b> {gold}\n"
+        f"✨ <b>XP Gained:</b> {xp}\n\n"
+        f"🧬 <b>Level:</b> {player['level']}\n"
+        f"📊 <b>XP:</b> {player['xp']}/{required_xp}"
+        f"{level_up_msg}"
     )
 
-    # 🖼 IMAGE SYSTEM
-    image_path = f"images/{monster['name'].lower().replace(' ', '_')}.jpg"
-
-    try:
-        await update.message.reply_photo(
-            photo=open(image_path, "rb"),
-            caption=text
-        )
-    except:
-        await update.message.reply_text(text)
-
-    # 🔥 SAVE FINAL DATA
-    update_user(user.id, player)
+    # 📸 IMAGE + TEXT SAME MESSAGE
+    await update.message.reply_photo(
+        photo=image,
+        caption=caption,
+        parse_mode="HTML"
+    )
