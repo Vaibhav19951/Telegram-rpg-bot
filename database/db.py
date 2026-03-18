@@ -56,10 +56,14 @@ def get_user(user_id):
     return None
 
 
-# 🔥 CREATE USER
 def create_user(user_id, name):
     cur.execute("""
-    INSERT INTO users VALUES (%s,%s,1,0,100,100,50,10,10,10,10,10,0,'[]')
+    INSERT INTO users VALUES (
+        %s, %s, 1, 0, 100, 100, 50,
+        10, 10, 10, 10, 10,
+        0,
+        '[]'
+    )
     """, (user_id, name))
 
 
