@@ -6,6 +6,7 @@ from database.db import users
 from data.monsters import MONSTERS
 from systems.combat import fight
 from systems.rewards import give_rewards
+from database.db import save_data
 
 
 # 🔥 XP requirement
