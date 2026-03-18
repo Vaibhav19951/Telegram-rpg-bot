@@ -49,7 +49,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🔥 <b>WELCOME, HUNTER!</b> 🔥\n\n"
         "⚔️ Your journey has begun...\n\n"
         "🧬 Rank: E\n"
-        "🎒 Inventory: Empty\n\n"
+        "stats : 0"
         "💡 Use /hunt to start fighting monsters!"
     )
 
