@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 import random
+from database.db import users
 
 async def enter_dungeon(update: Update, context: ContextTypes.DEFAULT_TYPE):
     monsters = ["Goblin", "Skeleton", "Dark Wolf"]
