@@ -2,11 +2,10 @@ import random
 import os
 from telegram import Update
 from telegram.ext import ContextTypes
-from database.db import users
+from database.db import users, save_data
 from data.monsters import MONSTERS
 from systems.combat import fight
 from systems.rewards import give_rewards
-from database.db import save_data
 
 
 # 🔥 XP requirement
@@ -28,7 +27,7 @@ def get_monster_by_level(player_level):
     return random.choice(pool)
 
 
-# 🔥 auto image match
+# 🔥 image finder
 def find_image(monster_name):
     try:
         if not os.path.exists("images"):
@@ -58,16 +57,17 @@ async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("❌ Use /start first")
             return
 
-        # 🎯 get monster
+        # 🎯 monster
         monster = get_monster_by_level(player["level"])
 
-        # ⚔️ fight
+        # ⚔️ combat
         win, log = fight(player, monster)
         battle_log = "\n".join(log)
 
-        # 🎁 rewards
+        # 🎁 rewards + SAVE
         if win:
             rewards = give_rewards(player, monster)
+            save_data()  # 🔥 VERY IMPORTANT
         else:
             rewards = {}
 
@@ -84,7 +84,7 @@ async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if "item" in rewards:
             reward_text += f"🎒 Item: {rewards['item']}\n"
 
-        # 💥 FINAL MESSAGE
+        # 💥 final message
         caption = (
             "⚔️ <b>BATTLE RESULT</b> ⚔️\n\n"
             f"{battle_log}\n\n"
@@ -93,7 +93,7 @@ async def hunt(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"🎁 <b>Rewards</b>\n{reward_text}"
         )
 
-        # 📸 image send
+        # 📸 image
         image_path = find_image(monster["name"])
 
         if image_path and os.path.exists(image_path):
