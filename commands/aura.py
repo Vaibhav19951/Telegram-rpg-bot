@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from database.db import users
 
 # Simple player aura data (future me DB me migrate kar sakte)
 players_aura = {}
