@@ -1,5 +1,4 @@
 import random
-from database.db import get_user, update_user
 from data.monsters import MONSTERS
 from database.db import users
 
