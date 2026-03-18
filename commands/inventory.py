@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from database.db import users
 
 # Player data store (future me DB)
 players = {}
