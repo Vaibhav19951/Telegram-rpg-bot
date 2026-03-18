@@ -4,8 +4,8 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from database.db import users
 from data.monsters import MONSTERS
-from system.combat import fight
-from system.rewards import give_rewards
+from systems.combat import fight
+from systems.rewards import give_rewards
 
 
 def get_required_xp(level: int) -> int:
